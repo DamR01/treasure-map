@@ -29,39 +29,37 @@ export const Adventurer = ({
 
     const move = adventurer.moves[moveIndex];
     let newPosition = { ...position };
+    let collectedTreasures = treasuresCollected;
 
     if (move === "A") {
       goNextPosition(orientation, newPosition, map);
       if (map.mountain[newPosition.y][newPosition.x] !== "M") {
-        setPosition(newPosition);
-
         if (map.treasures[newPosition.y][newPosition.x] > 0) {
-          setTreasuresCollected((prev) => prev + 1);
+          collectedTreasures += 1;
           map.treasures[newPosition.y][newPosition.x] -= 1;
         }
-
-        updatePosition({
-          ...adventurer,
-          x: newPosition.x,
-          y: newPosition.y,
-          treasuresCollected,
-        });
+        setPosition(newPosition);
+        setTreasuresCollected(collectedTreasures);
       }
     }
 
     if (move === "G") {
       const newOrientation = rotateLeft(orientation);
       setOrientation(newOrientation);
-      updatePosition({ ...adventurer, orientation: newOrientation });
     }
 
     if (move === "D") {
       const newOrientation = rotateRight(orientation);
       setOrientation(newOrientation);
-      updatePosition({ ...adventurer, orientation: newOrientation });
     }
 
     setMoveIndex(moveIndex + 1);
+    updatePosition({
+      ...adventurer,
+      x: newPosition.x,
+      y: newPosition.y,
+      treasuresCollected: collectedTreasures,
+    });
   };
 
   useEffect(() => {
